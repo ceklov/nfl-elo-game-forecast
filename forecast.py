@@ -1,9 +1,9 @@
 import csv
 import math
 
-HFA = 65.0     # Home field advantage is worth 65 Elo points
-K = 20.0       # The speed at which Elo ratings change
-REVERT = 1/3.0 # Between seasons, a team retains 2/3 of its previous season's rating
+HFA = 57.5     # Home field advantage is worth 65 Elo points
+K = 19.9       # The speed at which Elo ratings change
+REVERT = 1/2.97 # Between seasons, a team retains 2/3 of its previous season's rating
 
 REVERSIONS = {'CBD1925': 1502.032, 'RAC1926': 1403.384, 'LOU1926': 1307.201, 'CIB1927': 1362.919, 'MNN1929': 1306.702, # Some between-season reversions of unknown origin
               'BFF1929': 1331.943, 'LAR1944': 1373.977, 'PHI1944': 1497.988, 'ARI1945': 1353.939, 'PIT1945': 1353.939, 'CLE1999': 1300.0}

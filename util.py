@@ -73,5 +73,4 @@ class Util:
         if len(upcoming_games) > 0:
             print("Forecasts for upcoming games:")
             for game in upcoming_games:
-                print("%s\t%s vs. %s\t\t%s%% (Elo)\t\t%s%% (You)" % (game['date'], game['team1'], game['team2'], int(round(100*game['elo_prob1'])), int(round(100*game['my_prob1']))))
-            print("")
+                print("%s\t%s vs. %s\t%s%%\tSpread\t%.1f\tDecimal\t%.3f\t%.3f" % (game['date'], game['team1'], game['team2'], int(round(100*game['elo_prob1'])), float((float(game['elo2'])-float(game['elo1']))/25.0), 1/game['elo_prob1'], 1/(1-game['elo_prob1'])))
