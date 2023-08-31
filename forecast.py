@@ -1,9 +1,12 @@
 import csv
 import math
+import datetime
+from datetime import date
+from datetime import timedelta
 
-HFA = 57.5     # Home field advantage is worth 65 Elo points
-K = 19.9       # The speed at which Elo ratings change
-REVERT = 1/2.97 # Between seasons, a team retains 2/3 of its previous season's rating
+HFA = 57.5     # Home field advantage is worth 65 Elo points #originally 60.0
+K = 19.9       # The speed at which Elo ratings change #originally 20.0
+REVERT = 1/2.97 # Between seasons, a team retains 2/3 of its previous season's rating #originally 1/3.0
 
 REVERSIONS = {'CBD1925': 1502.032, 'RAC1926': 1403.384, 'LOU1926': 1307.201, 'CIB1927': 1362.919, 'MNN1929': 1306.702, # Some between-season reversions of unknown origin
               'BFF1929': 1331.943, 'LAR1944': 1373.977, 'PHI1944': 1497.988, 'ARI1945': 1353.939, 'PIT1945': 1353.939, 'CLE1999': 1300.0}
@@ -15,6 +18,9 @@ class Forecast:
         """ Generates win probabilities in the my_prob1 field for each game based on Elo model """
 
         # Initialize team objects to maintain ratings
+        d = date.today() + timedelta(days=-10)
+        recent_date = datetime.datetime(d.year, d.month, d.day)
+                
         teams = {}
         for row in [item for item in csv.DictReader(open("data/initial_elos.csv"))]:
             teams[row['team']] = {
@@ -23,6 +29,7 @@ class Forecast:
                 'elo': float(row['elo'])
             }
 
+        first_recent_game = True
         for game in games:
             team1, team2 = teams[game['team1']], teams[game['team2']]
 
@@ -56,3 +63,12 @@ class Forecast:
                 # Apply shift
                 team1['elo'] += shift
                 team2['elo'] -= shift
+                
+                # Print out new elo for recent games based on scores
+                game_date = datetime.datetime.strptime(game['date'], "%Y-%m-%d")
+                if game_date > recent_date:
+                    if first_recent_game:
+                        print("\n----------------------------------------------------------------------------\n")
+                        print("New elo values for recent games:\n")
+                        first_recent_game = False
+                    print("%s\t%s:\t%.11f\t%s:\t%.11f" % (game['date'], team1['name'], float(team1['elo']), team2['name'], float(team2['elo'])))
