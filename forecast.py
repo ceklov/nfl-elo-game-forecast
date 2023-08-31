@@ -83,6 +83,6 @@ class Forecast:
                 if game_date > recent_date:
                     if first_recent_game:
                         print("\n----------------------------------------------------------------------------\n")
-                        print("New elo values for recent games:\n")
+                        print("New Elo values for recent games:\n")
                         first_recent_game = False
                     print("%s\t%s:\t%.11f\t%s:\t%.11f" % (game['date'], team1['name'], float(team1['elo']), team2['name'], float(team2['elo'])))

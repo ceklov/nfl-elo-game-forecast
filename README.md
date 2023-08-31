@@ -1,6 +1,6 @@
 # NFL Predictions
 
-This a repository based on the one created to accompany [FiveThirtyEight's NFL Forecasting model and repositories](https://github.com/fivethirtyeight/nfl-elo-game).
+This is an NFL prediction repository that is based on [FiveThirtyEight's NFL Forecasting model and repositories](https://github.com/fivethirtyeight/nfl-elo-game).
 
 ## Evaluating historical forecasts
 
