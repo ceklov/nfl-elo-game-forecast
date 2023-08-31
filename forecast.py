@@ -14,6 +14,20 @@ REVERSIONS = {'CBD1925': 1502.032, 'RAC1926': 1403.384, 'LOU1926': 1307.201, 'CI
 class Forecast:
 
     @staticmethod
+    def forecast_upcoming(games):
+
+        upcoming_games = [g for g in games if g['result1'] == None and 'my_prob1' in g]
+
+        if len(upcoming_games) > 0:
+            print("\n----------------------------------------------------------------------------\n")
+            print("Forecasts for upcoming games:\n")
+            print("\t\tTeams\t\tProbA\tSpreadA\t\tDecA\t\tDecB\n")
+            for game in upcoming_games:
+                spread = round(-1*(float(game['elo2'])-float(game['elo1']))/25.0*2)/2
+                print("%s\t%s vs. %s\t%s%%\t%.1f\t\t%.2f\t\t%.2f" % (game['date'], game['team1'], game['team2'], int(round(100*game['elo_prob1'])), spread, 1/game['elo_prob1'], 1/(1-game['elo_prob1'])))
+
+
+    @staticmethod
     def forecast(games):
         """ Generates win probabilities in the my_prob1 field for each game based on Elo model """
 
@@ -64,7 +78,7 @@ class Forecast:
                 team1['elo'] += shift
                 team2['elo'] -= shift
                 
-                # Print out new elo for recent games based on scores
+                # Print out new elo for recent games based on actual outcomes
                 game_date = datetime.datetime.strptime(game['date'], "%Y-%m-%d")
                 if game_date > recent_date:
                     if first_recent_game:
