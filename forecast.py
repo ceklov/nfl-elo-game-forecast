@@ -18,7 +18,7 @@ class Forecast:
         """ Generates win probabilities in the my_prob1 field for each game based on Elo model """
 
         # Initialize team objects to maintain ratings
-        d = date.today() + timedelta(days=-10)
+        d = date.today() + timedelta(days=-6)
         recent_date = datetime.datetime(d.year, d.month, d.day)
                 
         teams = {}
@@ -78,10 +78,10 @@ class Forecast:
         if len(upcoming_games) > 0:
             print("\n----------------------------------------------------------------------------\n")
             print("Forecasts for upcoming games:\n")
-            print("\t\tTeams\t\tProbA\tSpreadA\t\tDecA\t\tDecB\n")
+            print("\t\tTeams\t\tProbA\t\t\tSpreadA\t\tDecA\t\tDecB\n")
             for game in upcoming_games:
                 elo_diff = float(game['elo1']) - float(game['elo2']) + (0 if game['neutral'] == 1 else HFA)
                 spread = round(-1*elo_diff/25.0*2)/2
                 elo_prob = 1.0 / (math.pow(10.0, (-elo_diff/400.0)) + 1.0)
-                print("%s\t%s vs. %s\t%s%%\t%.1f\t\t%.2f\t\t%.2f" % (game['date'], game['team1'], game['team2'], int(round(100*elo_prob)), spread, 1/elo_prob, 1/(1-elo_prob)))
+                print("%s\t%s vs. %s\t%s\t%.1f\t\t%.2f\t\t%.2f" % (game['date'], game['team1'], game['team2'], elo_prob, spread, 1/elo_prob, 1/(1-elo_prob)))
                    
