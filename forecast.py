@@ -15,7 +15,7 @@ class Forecast:
 
     @staticmethod
     def forecast(games):
-        """ Generates win probabilities in the my_prob1 field for each game based on Elo model """
+        """ Generates win probabilities in the elo_prob1 field for each game based on Elo model """
 
         # Initialize team objects to maintain ratings
         d = date.today() + timedelta(days=-6)
@@ -26,6 +26,7 @@ class Forecast:
             teams[row['team']] = {
                 'name': row['team'],
                 'season': None,
+                'date': None,
                 'elo': float(row['elo'])
             }
 
@@ -42,13 +43,14 @@ class Forecast:
                     else:
                         team['elo'] = 1505.0*REVERT + team['elo']*(1-REVERT)
                 team['season'] = game['season']
+                team['date'] = game['date']
 
             # Elo difference includes home field advantage
             elo_diff = team1['elo'] - team2['elo'] + (0 if game['neutral'] == 1 else HFA)
 
-            # This is the most important piece, where we set my_prob1 to our forecasted probability
+            # This is the most important piece, where we set elo_prob1 to our forecasted probability
             if game['elo_prob1'] != None:
-                game['my_prob1'] = 1.0 / (math.pow(10.0, (-elo_diff/400.0)) + 1.0)
+                game['elo_prob1'] = 1.0 / (math.pow(10.0, (-elo_diff/400.0)) + 1.0)
 
             # If game was played, maintain team Elo ratings
             if game['score1'] != None:
@@ -58,7 +60,7 @@ class Forecast:
                 mult = math.log(max(pd, 1) + 1.0) * (2.2 / (1.0 if game['result1'] == 0.5 else ((elo_diff if game['result1'] == 1.0 else -elo_diff) * 0.001 + 2.2)))
 
                 # Elo shift based on K and the margin of victory multiplier
-                shift = (K * mult) * (game['result1'] - game['my_prob1'])
+                shift = (K * mult) * (game['result1'] - game['elo_prob1'])
 
                 # Apply shift
                 team1['elo'] += shift
@@ -71,17 +73,16 @@ class Forecast:
                         print("\n----------------------------------------------------------------------------\n")
                         print("New Elo values for recent games:\n")
                         first_recent_game = False
-                    print("%s\t%s:\t%.11f\t%s:\t%.11f" % (game['date'], team1['name'], float(team1['elo']), team2['name'], float(team2['elo'])))
+                    print("%s\t%s:\t%.11f\t%s:\t%.11f" % (team1['date'], team1['name'], float(team1['elo']), team2['name'], float(team2['elo'])))
 
-        upcoming_games = [g for g in games if g['result1'] == None and g['elo1'] != '' and g['elo2'] != '']
+        print("\n----------------------------------------------------------------------------\n")
+        print("Forecasts for upcoming games:\n")
+        print("\t\tTeams\t\tProbA\t\t\tSpreadA\t\tDecA\t\tDecB\n")
 
-        if len(upcoming_games) > 0:
-            print("\n----------------------------------------------------------------------------\n")
-            print("Forecasts for upcoming games:\n")
-            print("\t\tTeams\t\tProbA\t\t\tSpreadA\t\tDecA\t\tDecB\n")
-            for game in upcoming_games:
+        for game in games:
+            if game['result1'] == None and game['elo1'] != '' and game['elo2'] != '':
                 elo_diff = float(game['elo1']) - float(game['elo2']) + (0 if game['neutral'] == 1 else HFA)
                 spread = round(-1*elo_diff/25.0*2)/2
-                elo_prob = 1.0 / (math.pow(10.0, (-elo_diff/400.0)) + 1.0)
-                print("%s\t%s vs. %s\t%s\t%.1f\t\t%.2f\t\t%.2f" % (game['date'], game['team1'], game['team2'], elo_prob, spread, 1/elo_prob, 1/(1-elo_prob)))
+                game['elo_prob1'] = 1.0 / (math.pow(10.0, (-elo_diff/400.0)) + 1.0)
+                print("%s\t%s vs. %s\t%s\t%.1f\t\t%.2f\t\t%.2f" % (game['date'], game['team1'], game['team2'], game['elo_prob1'], spread, 1/game['elo_prob1'], 1/(1-game['elo_prob1'])))
                    

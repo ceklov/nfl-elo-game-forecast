@@ -12,3 +12,12 @@ class Util:
             game['elo_prob1'], game['result1'] = float(game['elo_prob1']) if game['elo_prob1'] != '' else None, float(game['result1']) if game['result1'] != '' else None
 
         return games
+    
+    @staticmethod
+    def write_games(games, file):
+        fields = ['date', 'season', 'neutral', 'playoff', 'team1', 'team2', 'score1', 'score2', 'elo1', 'elo2', 'elo_prob1', 'result1']
+
+        with open(file, 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames = fields)
+            writer.writeheader()
+            writer.writerows(games)
