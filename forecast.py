@@ -1,8 +1,5 @@
 import csv
 import math
-import datetime
-from datetime import date
-from datetime import timedelta
 
 HFA = 57.5      # Home field advantage -- originally 60.0
 K = 19.9        # The speed at which Elo ratings change -- originally 20.0
@@ -14,13 +11,16 @@ REVERSIONS = {'CBD1925': 1502.032, 'RAC1926': 1403.384, 'LOU1926': 1307.201, 'CI
 class Forecast:
 
     @staticmethod
+    def get_team_elo(team_name, teams):
+        if team_name in teams:
+            return teams[team_name]['elo']
+        return None
+
+    @staticmethod
     def forecast(games):
         """ Generates win probabilities in the elo_prob1 field for each game based on Elo model """
 
         # Initialize team objects to maintain ratings
-        d = date.today() + timedelta(days=-6)
-        recent_date = datetime.datetime(d.year, d.month, d.day)
-                
         teams = {}
         for row in [item for item in csv.DictReader(open("data/initial_elos.csv"))]:
             teams[row['team']] = {
@@ -30,7 +30,6 @@ class Forecast:
                 'elo': float(row['elo'])
             }
 
-        first_recent_game = True
         for game in games:
             team1, team2 = teams[game['team1']], teams[game['team2']]
 
@@ -65,16 +64,29 @@ class Forecast:
                 # Apply shift
                 team1['elo'] += shift
                 team2['elo'] -= shift
-                
-                # Print out new elo for recent games based on actual outcomes
-                game_date = datetime.datetime.strptime(game['date'], "%Y-%m-%d")
-                if game_date > recent_date:
-                    if first_recent_game:
-                        print("\n----------------------------------------------------------------------------\n")
-                        print("New Elo values for recent games:\n")
-                        first_recent_game = False
-                    print("%s\t%s:\t%.11f\t%s:\t%.11f" % (team1['date'], team1['name'], float(team1['elo']), team2['name'], float(team2['elo'])))
+  
+        # Print out and save new elo for recent games based on actual outcomes
+        print("\n----------------------------------------------------------------------------\n")
+        print("New Elo values for recent games:\n")
+        for game in games:
+            if game['elo1'] in [0, ''] or game['elo2'] in [0, '']:
+                if not game['elo1']:
+                    team1 = game['team1']
+                    elo1 = Forecast.get_team_elo(team1, teams)
+                    if elo1 is not None:
+                        game['elo1'] = elo1
+                        teams[team1]['elo'] = elo1
 
+                if not game['elo2']:
+                    team2 = game['team2']
+                    elo2 = Forecast.get_team_elo(team2, teams)
+                    if elo2 is not None:
+                        game['elo2'] = elo2
+                        teams[team2]['elo'] = elo2
+        
+                print("%s\t%s:\t%.11f\t%s:\t%.11f" % (game['date'], teams[team1]['name'], float(teams[team1]['elo']), teams[team2]['name'], float(teams[team2]['elo'])))
+                
+        # Print out and save new forecasts for upcoming games that have elo values but no results
         print("\n----------------------------------------------------------------------------\n")
         print("Forecasts for upcoming games:\n")
         print("\t\tTeams\t\tProbA\t\t\tSpreadA\t\tDecA\t\tDecB\n")
