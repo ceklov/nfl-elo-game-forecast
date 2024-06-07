@@ -89,12 +89,30 @@ class Forecast:
         # Print out and save new forecasts for upcoming games that have elo values but no results
         print("\n----------------------------------------------------------------------------\n")
         print("Forecasts for upcoming games:\n")
-        print("\t\tTeams\t\tProbA\t\t\tSpreadA\t\tDecA\t\tDecB\n")
+        print("\t\tTeam\t\tImplied Odds\tAmerican\tDecimal\t\tSpread\n")
 
         for game in games:
             if game['result1'] == None and game['elo1'] != '' and game['elo2'] != '':
                 elo_diff = float(game['elo1']) - float(game['elo2']) + (0 if game['neutral'] == 1 else HFA)
-                spread = round(-1*elo_diff/25.0*2)/2
                 game['elo_prob1'] = 1.0 / (math.pow(10.0, (-elo_diff/400.0)) + 1.0)
-                print("%s\t%s vs. %s\t%s\t%.1f\t\t%.2f\t\t%.2f" % (game['date'], game['team1'], game['team2'], game['elo_prob1'], spread, 1/game['elo_prob1'], 1/(1-game['elo_prob1'])))
-                   
+                spread = round(-1*elo_diff/25.0*2)/2
+
+                percentage1 = game['elo_prob1']
+                percentage2 = 1 - percentage1
+                decimal1 = 1 / percentage1
+                decimal2 = 1 / percentage2
+                if percentage1 >= 0.5:
+                    american1 = f"-{(-100 / (1 - decimal1)):.0f}"
+                    american2 = f"+{((decimal1 - 1) * 100):.0f}"
+                else:
+                    american1 = f"+{((decimal1 - 1) * 100):.0f}"
+                    american2 = f"-{(-100 / (1 - decimal1)):.0f}"
+                if spread == 0.0:
+                    spread1 = "0.0"
+                    spread2 = "0.0"
+                else:
+                    spread1 = f"{spread:+.1f}"
+                    spread2 = f"{-spread:+.1f}"
+
+                print(f"{game['date']}\t{game['team1']}\t\t{percentage1:.2%}\t\t{american1}\t\t{decimal1:.2f}\t\t{spread1}")
+                print(f"\t\t{game['team2']}\t\t{percentage2:.2%}\t\t{american2}\t\t{decimal2:.2f}\t\t{spread2}\n")
