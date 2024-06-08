@@ -21,3 +21,13 @@ class Util:
             writer = csv.DictWriter(f, fieldnames = fields)
             writer.writeheader()
             writer.writerows(games)
+
+    @staticmethod
+    def print_betting_odds(game_odds):
+        print("\n----------------------------------------------------------------------------\n")
+        print("Forecasts for upcoming games:\n")
+        print("\t\tTeam\t\tElo\t\tImplied\t\tAmerican\tDecimal\t\tSpread\n")
+
+        for key, game in game_odds.items():
+            print(f"{game['date']}\t{game['team1']}\t\t{game['elo1']}\t{game['percentage1']}\t\t{game['american1']}\t\t{game['decimal1']:.2f}\t\t{game['spread1']}")
+            print(f"\t\t{game['team2']}\t\t{game['elo2']}\t{game['percentage2']}\t\t{game['american2']}\t\t{game['decimal2']:.2f}\t\t{game['spread2']}\n")
