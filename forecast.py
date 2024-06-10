@@ -98,10 +98,10 @@ class Forecast:
 
                 if percentage1 >= 0.5:
                     american1 = f"-{(-100 / (1 - decimal1)):.0f}"
-                    american2 = f"+{((decimal1 - 1) * 100):.0f}"
+                    american2 = f"+{((decimal2 - 1) * 100):.0f}"
                 else:
                     american1 = f"+{((decimal1 - 1) * 100):.0f}"
-                    american2 = f"-{(-100 / (1 - decimal1)):.0f}"
+                    american2 = f"-{(-100 / (1 - decimal2)):.0f}"
 
                 if spread == 0.0:
                     spread1 = "0.0"
