@@ -29,5 +29,6 @@ class Util:
         print("\t\tTeam\t\tElo\t\tImplied\t\tAmerican\tDecimal\t\tSpread\n")
 
         for key, game in game_odds.items():
-            print(f"{game['date']}\t{game['team1']}\t\t{game['elo1']}\t{game['percentage1']}\t\t{game['american1']}\t\t{game['decimal1']:.2f}\t\t{game['spread1']}")
-            print(f"\t\t{game['team2']}\t\t{game['elo2']}\t{game['percentage2']}\t\t{game['american2']}\t\t{game['decimal2']:.2f}\t\t{game['spread2']}\n")
+            # follows the convention to print away team before home team that seems prominent
+            print(f"{game['date']}\t{game['team2']}\t\t{game['elo2']}\t{game['percentage2']}\t\t{game['american2']}\t\t{game['decimal2']:.2f}\t\t{game['spread2']}")
+            print(f"\t\t@ {game['team1']}\t\t{game['elo1']}\t{game['percentage1']}\t\t{game['american1']}\t\t{game['decimal1']:.2f}\t\t{game['spread1']}\n")
