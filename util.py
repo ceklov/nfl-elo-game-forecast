@@ -1,4 +1,5 @@
 import csv
+from forecast import HFA
 
 class Util:
 
@@ -26,9 +27,9 @@ class Util:
     def print_betting_odds(game_odds):
         print("\n----------------------------------------------------------------------------\n")
         print("Forecasts for upcoming games:\n")
-        print("\t\tTeam\t\tElo\t\tImplied\t\tAmerican\tDecimal\t\tSpread\n")
+        print("\t\tTeam\t\tElo (Base)\tElo (HFA-Adj.)\tImplied\t\tAmerican\tDecimal\t\tSpread\n")
 
         for key, game in game_odds.items():
             # follows the convention to print away team before home team that seems prominent
-            print(f"{game['date']}\t{game['team2']}\t\t{game['elo2']}\t{game['percentage2']}\t\t{game['american2']}\t\t{game['decimal2']:.2f}\t\t{game['spread2']}")
-            print(f"\t\t@ {game['team1']}\t\t{game['elo1']}\t{game['percentage1']}\t\t{game['american1']}\t\t{game['decimal1']:.2f}\t\t{game['spread1']}\n")
+            print(f"{game['date']}\t{game['team2']}\t\t{game['elo2']}\t{game['elo2']}\t{game['percentage2']}\t\t{game['american2']}\t\t{game['decimal2']:.2f}\t\t{game['spread2']}")
+            print(f"\t\t@ {game['team1']}\t\t{game['elo1']}\t{float(game['elo1']) + HFA}\t{game['percentage1']}\t\t{game['american1']}\t\t{game['decimal1']:.2f}\t\t{game['spread1']}\n")
