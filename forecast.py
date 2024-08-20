@@ -117,13 +117,13 @@ class Forecast:
                     'american1': american1,
                     'decimal1': decimal1,
                     'spread1': spread1,
-                    'elo1': f"{game['elo1']:.4f}",
+                    'elo1': f"{float(game['elo1']):.4f}",
                     'team2': game['team2'],
                     'percentage2': f"{percentage2:.2%}",
                     'american2': american2,
                     'decimal2': decimal2,
                     'spread2': spread2,
-                    'elo2': f"{game['elo2']:.4f}"
+                    'elo2': f"{float(game['elo2']):.4f}"
                 }
 
-        return game_odds
+        return game_odds, games
