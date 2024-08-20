@@ -111,6 +111,7 @@ class Forecast:
                     spread2 = f"{-spread:+.1f}"
 
                 game_odds[f"{game['team1']}-{game['team2']}"] = {
+                    'neutral': game['neutral'],
                     'date': game['date'],
                     'team1': game['team1'],
                     'percentage1': f"{percentage1:.2%}",
