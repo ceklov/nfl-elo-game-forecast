@@ -17,4 +17,4 @@ Simply run `python eval.py`.
 
 Sample output:
 
-![Sample output](output.png)
+![Sample output](assets/output.png)
