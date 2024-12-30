@@ -31,6 +31,11 @@ class Forecast:
             }
 
         for game in games:
+
+            # A row has some data (e.g. date) but not the team data yet
+            if game['team1'] == '' or game['team2'] == '':
+                continue
+
             team1, team2 = teams[game['team1']], teams[game['team2']]
 
             # Revert teams at the start of seasons
