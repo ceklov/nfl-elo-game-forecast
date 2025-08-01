@@ -90,7 +90,11 @@ class Forecast:
         # Calculate forecasts for upcoming games that have elo values but no results
         game_odds = {}
 
+        teams_forecast = [] # to include only the next game for each team in game_odds
         for game in games:
+            if game['team1'] in teams_forecast and game['team2'] in teams_forecast:
+                continue
+
             if game['result1'] == None and game['elo1'] != '' and game['elo2'] != '':
                 elo_diff = float(game['elo1']) - float(game['elo2']) + (0 if game['neutral'] == 1 else HFA)
                 game['elo_prob1'] = 1.0 / (math.pow(10.0, (-elo_diff / 400.0)) + 1.0)
@@ -131,5 +135,8 @@ class Forecast:
                     'spread2': spread2,
                     'elo2': f"{float(game['elo2']):.4f}"
                 }
+
+                teams_forecast.append(game['team1'])
+                teams_forecast.append(game['team2'])
 
         return game_odds, games
